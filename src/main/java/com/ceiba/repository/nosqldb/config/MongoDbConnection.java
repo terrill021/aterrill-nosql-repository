@@ -1,9 +1,11 @@
-package com.ceiba.repository.nosqldb.connection;
+package com.ceiba.repository.nosqldb.config;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -20,13 +22,12 @@ public abstract class MongoDbConnection extends AbstractMongoConfiguration {
   
   private final String DEFAULT_MONGO_DATABASE = "admin";
   
-  private DataSourceNoSql dataSourceNoSql;
 
-  public abstract void setDataSourceNoSql(DataSourceNoSql dataSourceNoSql);
+  public abstract DataSourceNoSql getDataSourceNoSql();
 
   @Override
   protected String getDatabaseName() {
-    return dataSourceNoSql.getDataBase();
+    return getDataSourceNoSql().getDataBase();
   }
 
   @Override
@@ -35,6 +36,7 @@ public abstract class MongoDbConnection extends AbstractMongoConfiguration {
   }
 
   @Override
+  @Bean
   public MongoTemplate mongoTemplate() throws Exception {
     MongoTemplate mongoTemplate;
     mongoTemplate = new MongoTemplate(mongoDbFactory());
@@ -57,16 +59,16 @@ public abstract class MongoDbConnection extends AbstractMongoConfiguration {
   private List<MongoCredential> mongoCredentials() {
 
     List<MongoCredential> credentials = new ArrayList<MongoCredential>();
-    String user = dataSourceNoSql.getUser();
-    String password = dataSourceNoSql.getPassword();
+    String user = getDataSourceNoSql().getUser();
+    String password = getDataSourceNoSql().getPassword();
     if ((user != null && user != "") && (password != null && password != "")) {
-      credentials.add(MongoCredential.createCredential(user, DEFAULT_MONGO_DATABASE,
+      credentials.add(MongoCredential.createCredential(user, getDataSourceNoSql().getDataBase(),
           password.toCharArray()));
     }
     return credentials;
   }
 
   private ServerAddress serverAddress() throws UnknownHostException {
-    return new ServerAddress(dataSourceNoSql.getHost(), dataSourceNoSql.getPort());
+    return new ServerAddress(getDataSourceNoSql().getHost(), getDataSourceNoSql().getPort());
   }
 }

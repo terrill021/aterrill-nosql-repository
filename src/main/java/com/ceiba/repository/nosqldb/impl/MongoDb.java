@@ -6,22 +6,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
+import org.springframework.stereotype.Service;
 
 import com.ceiba.repository.nosqldb.IDbNoSql;
 
+@Service
 public class MongoDb implements IDbNoSql {
 
+  @Autowired
   private MongoTemplate mongoTemplate;
-
-  private GridFsOperations grOperations;
-
-  public void setGrOperations(GridFsOperations gFsOperations) {
-    this.grOperations = gFsOperations;
-  }
 
   public void setMongoTemplate(MongoTemplate mongoTemplate) {
     this.mongoTemplate = mongoTemplate;
@@ -66,19 +64,6 @@ public class MongoDb implements IDbNoSql {
 
   }
 
-  public void storeFile(InputStream inStream, String fileName, String contentType,
-      Object metaData) {
-    try {
-      grOperations.store(inStream, fileName, contentType, metaData);
-    } catch (Exception e) {
-    	throw e;
-    }
-  }
-
-  public void deleteFile(String fileName) {
-    grOperations.delete(new Query(Criteria.where("filename").is(fileName)));
-  }
-
   public <T> T findOneByFieldValue(String field, String value, Class<T> type) {
     try {
       return (T) mongoTemplate.findOne(new Query(Criteria.where(field).is(value)), type);
@@ -98,7 +83,6 @@ public class MongoDb implements IDbNoSql {
     Iterator<Map.Entry<String, String>> it = fields.entrySet().iterator();
     Map.Entry<String, String> pair = it.next();
     queryTemp = Criteria.where(pair.getKey()).regex(pair.getValue());
-
 
     // Recorrer el resto
     while (it.hasNext()) {

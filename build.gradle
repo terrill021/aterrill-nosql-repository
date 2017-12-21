@@ -9,7 +9,7 @@ targetCompatibility = 1.8
 dependencies {
     testCompile project.ext.junit
     testCompile project.ext.mockito
-    compile group: 'org.springframework', name: 'spring-context', version: '4.3.13.RELEASE'
+   // compile group: 'org.springframework', name: 'spring-context', version: '4.3.13.RELEASE'
     compile group: 'org.springframework.data', name: 'spring-data-mongodb', version: '1.10.7.RELEASE'
 }
 

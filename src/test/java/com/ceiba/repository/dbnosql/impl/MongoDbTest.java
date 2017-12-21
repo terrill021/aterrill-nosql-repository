@@ -35,13 +35,15 @@ public class MongoDbTest {
   @Before
   public void sepUp() {
     tester = new Tester();
-    mongoDb = Mockito.mock(MongoDb.class);
+    mongoDb = new MongoDb();
+    mongoTemplate = Mockito.mock(MongoTemplate.class);
+    mongoDb.setMongoTemplate(mongoTemplate);
   }
   
   @Test
   public void saveTest() throws Exception {	  
 	  //arrange			  
-	  Mockito.when(mongoDb.save(tester)).thenReturn(true);
+	  Mockito.doNothing().when(mongoTemplate).insert(tester);
 	  // act
 	  Boolean res = mongoDb.save(tester);
 	  //assert		  
@@ -51,10 +53,9 @@ public class MongoDbTest {
   @Test(expected = Exception.class)
   public void saveFailTest() throws Exception {	  
 	  //arrange		
-	  Mockito.when(mongoDb.save(null)).thenThrow(Exception.class);
+	  Mockito.doThrow(Exception.class).when(mongoTemplate).insert(null);
 	  // act
 	  mongoDb.save(null);
-	  //assert	
-	  
+	  //assert		  
 	}
 }
