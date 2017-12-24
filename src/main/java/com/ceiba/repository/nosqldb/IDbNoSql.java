@@ -28,4 +28,5 @@ public interface IDbNoSql {
   
   public <T> List<T> findByFieldValues(Map<String, String> fields, Class<T> entityClass);
 
+  public <T> Boolean saveOrUpdate(T entity) throws Exception;
 }

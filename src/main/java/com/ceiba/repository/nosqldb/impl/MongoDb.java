@@ -30,6 +30,12 @@ public class MongoDb implements IDbNoSql {
       mongoTemplate.insert(entity);
       return Boolean.TRUE;
   }
+  
+  public <T> Boolean saveOrUpdate(T entity) throws Exception {
+	  
+      mongoTemplate.save(entity);
+      return Boolean.TRUE;
+  }
 
   public <T> List<T> getAllObjects(Class<T> type) {
     try {
